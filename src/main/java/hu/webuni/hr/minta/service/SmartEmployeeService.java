@@ -25,16 +25,42 @@ public class SmartEmployeeService implements EmployeeService {
 		double yearsWorked = ChronoUnit.DAYS.between(employee.getDateOfStartWork(), LocalDateTime.now()) / 365.0;
 		
 		Smart smartConfig = config.getSalary().getSmart();
-		if(yearsWorked > smartConfig.getLimit3())
-			return smartConfig.getPercent3();
+//		if(yearsWorked > smartConfig.getLimit3())
+//			return smartConfig.getPercent3();
+//		
+//		if(yearsWorked > smartConfig.getLimit2())
+//			return smartConfig.getPercent2();
+//		
+//		if(yearsWorked > smartConfig.getLimit1())
+//			return smartConfig.getPercent1();
 		
-		if(yearsWorked > smartConfig.getLimit2())
-			return smartConfig.getPercent2();
 		
-		if(yearsWorked > smartConfig.getLimit1())
-			return smartConfig.getPercent1();
+		TreeMap<Double, Integer> raisingIntervals = smartConfig.getLimits();
+
+		//1. megoldás
+//		Integer maxLimit = null;
 		
-		return 0;
+//		for(Entry<Double, Integer> entry: raisingIntervals.entrySet()) {
+//			
+//			if(yearsWorked > entry.getKey())
+//				maxLimit = entry.getValue();
+//			
+//			else
+//				break;
+//		}
+//		return maxLimit == null ? 0: maxLimit;
+		
+		//2. megoldás streammel
+//		Optional<Double> optionalMax = raisingIntervals.keySet().stream()
+//			.filter(k -> yearsWorked >= k)
+//			.max(Double::compare);
+//		
+//		return optionalMax.isEmpty() ? 0 : raisingIntervals.get(optionalMax.get());
+		
+		//3. megoldás
+		Entry<Double, Integer> floorEntry = raisingIntervals.floorEntry(yearsWorked);
+		return floorEntry == null ? 0 : floorEntry.getValue();
+		
 	}
 
 }
