@@ -30,12 +30,12 @@ import hu.webuni.hr.minta.dto.View.BaseData;
 @RequestMapping("/api/companies")
 public class CompanyController {
 
-	private Map<Long, CompanyDto> companies = new HashMap<>();
 	
 	//1. megoldás
-//	@GetMapping
-//	public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full){
-//
+	@GetMapping
+	public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full){
+		return null;
+		
 //		if(isFull(full)) {
 //			return new ArrayList<>(companies.values());
 //		} else {
@@ -43,7 +43,7 @@ public class CompanyController {
 //					.map(this::createCompanyWithoutEmployees)
 //					.collect(Collectors.toList());
 //		}
-//	}
+	}
 	
 	private CompanyDto createCompanyWithoutEmployees(CompanyDto c) {
 		return new CompanyDto(c.getId(), c.getRegistrationNumber(), c.getName(), c.getAddress(), null);
@@ -54,76 +54,93 @@ public class CompanyController {
 	}
 	
 	//2. megoldás
-	@GetMapping(params = "full=true")
-	public List<CompanyDto> getAllWithEmployees(){
-		return new ArrayList<>(companies.values());
-	}
+//	@GetMapping(params = "full=true")
+//	public List<CompanyDto> getAllWithEmployees(){
+//		return new ArrayList<>(companies.values());
+//	}
 	
-	@GetMapping
-	@JsonView(BaseData.class)
-	public List<CompanyDto> getAllWithoutEmployees(@RequestParam(required = false) Boolean full){
-		return new ArrayList<>(companies.values());
-	}
+//	@GetMapping
+//	@JsonView(BaseData.class)
+//	public List<CompanyDto> getAllWithoutEmployees(@RequestParam(required = false) Boolean full){
+//		return new ArrayList<>(companies.values());
+//	}
 	
 	@GetMapping("/{id}")
 	public CompanyDto getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
-		CompanyDto companyDto = companies.get(id);
-		if(isFull(full))
-			return companyDto;
-		else
-			return createCompanyWithoutEmployees(companyDto);
+		return null;
+//		CompanyDto companyDto = companies.get(id);
+//		if(isFull(full))
+//			return companyDto;
+//		else
+//			return createCompanyWithoutEmployees(companyDto);
 	}
 	
 	@PostMapping
 	public CompanyDto createCompany(@RequestBody CompanyDto companyDto) {
-		companies.put(companyDto.getId(), companyDto);
-		return companyDto;
+
+		return null;
+//      return companyMapper.companyToDto(companyService.save(companyMapper.dtoToCompany(companyDto)));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<CompanyDto> modifyCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-		if(!companies.containsKey(id)) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		companyDto.setId(id);
-		companies.put(id, companyDto);
-		return ResponseEntity.ok(companyDto);
+		return null;
+//      companyDto.setId(id);
+//      Company updatedCompany = companyService.update(companyMapper.dtoToCompany(companyDto));
+//      if (updatedCompany == null) {
+//          return ResponseEntity.notFound().build();
+//      }
+//
+//      return ResponseEntity.ok(companyMapper.companyToDto(updatedCompany));
 	}
 	
 	@DeleteMapping("/{id}")
 	public void deleteCompany(@PathVariable long id) {
-		companies.remove(id);
+//      companyService.delete(id);
 	}
 	
 	
-	@PostMapping("/{id}/employees")
-	public CompanyDto addNewEmployee(@PathVariable long id, @RequestBody EmployeeDto employeeDto){
-		CompanyDto company = findByIdOrThrow(id);
-		
-		company.getEmployees().add(employeeDto);
-		return company;
+	@PostMapping("/{companyId}/employees")
+	public CompanyDto addNewEmployee(@PathVariable long companyId, @RequestBody EmployeeDto employeeDto){
+        return null;
+//      try {
+//      return companyMapper.companyToDto(
+//              companyService.addEmployee(id, employeeMapper.dtoToEmployee(employeeDto))
+//              );
+//  } catch (NoSuchElementException e) {
+//      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//  }
 	}
 
-	private CompanyDto findByIdOrThrow(long id) {
-		CompanyDto company = companies.get(id);
-		if(company == null)
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		return company;
-	}
+//	private CompanyDto findByIdOrThrow(long id) {
+//		CompanyDto company = companies.get(id);
+//		if(company == null)
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//		return company;
+//	}
 
-	@DeleteMapping("/{id}/employees/{employeeId}")
-	public CompanyDto deleteEmployeeFromCompany(@PathVariable long id, @PathVariable long employeeId) {
-		CompanyDto company = findByIdOrThrow(id);
-		company.getEmployees().removeIf(emp -> emp.getId() == employeeId);
-		return company;
+	@DeleteMapping("/{companyId}/employees/{empId}")
+	public CompanyDto deleteEmployee(@PathVariable long companyId, @PathVariable long empId) {
+        return null;
+//      try {
+//      return companyMapper.companyToDto(
+//              companyService.deleteEmployee(id, employeeId)
+//              );
+//  } catch (NoSuchElementException e) {
+//      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//  }
 	}
 	
-	@PutMapping("/{id}/employees")
-	public CompanyDto replaceAllEmployees(@PathVariable long id, @RequestBody List<EmployeeDto> employees) {
-		CompanyDto company = findByIdOrThrow(id);
-		company.setEmployees(employees);
-		return company;
+	@PutMapping("/{companyId}/employees")
+	public CompanyDto replaceEmployees(@PathVariable long companyId, @RequestBody List<EmployeeDto> newEmployees){
+        return null;
+//      try {
+//          return companyMapper.companyToDto(
+//                  companyService.replaceEmployees(id, employeeMapper.dtosToEmployees(employees))
+//                  );
+//      } catch (NoSuchElementException e) {
+//          throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//      }
 	}
 	
 }

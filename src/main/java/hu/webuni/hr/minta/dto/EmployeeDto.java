@@ -2,15 +2,21 @@ package hu.webuni.hr.minta.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Positive;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class EmployeeDto {
 	private long id;
+	@NotEmpty
 	private String name;
+	@NotEmpty
 	private String title;
+	@Positive
 	private int salary;
-//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Past
 	private LocalDateTime entryDate;
 
 	public EmployeeDto() {
