@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.webuni.hr.minta.model.Company;
 import hu.webuni.hr.minta.model.Employee;
@@ -20,10 +21,13 @@ public class CompanyService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
+	
+	@Transactional
 	public Company save(Company company) {
 		return companyRepository.save(company);
 	}
 
+	@Transactional
 	public Company update(Company company) {
 		if(!companyRepository.existsById(company.getId()))
 			return null;
@@ -41,7 +45,8 @@ public class CompanyService {
 	public void delete(long id) {
 		companyRepository.deleteById(id);
 	}
-	
+
+	@Transactional
 	public Company addEmployee(long id, Employee employee) {
 		Company company = companyRepository.findById(id).get();
 		company.addEmployee(employee);

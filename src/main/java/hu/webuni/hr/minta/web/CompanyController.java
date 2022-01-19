@@ -20,7 +20,9 @@ import hu.webuni.hr.minta.dto.CompanyDto;
 import hu.webuni.hr.minta.dto.EmployeeDto;
 import hu.webuni.hr.minta.mapper.CompanyMapper;
 import hu.webuni.hr.minta.mapper.EmployeeMapper;
+import hu.webuni.hr.minta.model.AverageSalaryByPosition;
 import hu.webuni.hr.minta.model.Company;
+import hu.webuni.hr.minta.repository.CompanyRepository;
 import hu.webuni.hr.minta.service.CompanyService;
 
 
@@ -32,14 +34,16 @@ public class CompanyController {
 	private CompanyMapper companyMapper;
 	private CompanyService companyService;
 	private EmployeeMapper employeeMapper;
+	private CompanyRepository companyRepository;
 	
 
-	public CompanyController(CompanyMapper companyMapper, CompanyService companyService,
-			EmployeeMapper employeeMapper) {
+	public CompanyController(CompanyMapper companyMapper, CompanyService companyService, EmployeeMapper employeeMapper,
+			CompanyRepository companyRepository) {
 		super();
 		this.companyMapper = companyMapper;
 		this.companyService = companyService;
 		this.employeeMapper = employeeMapper;
+		this.companyRepository = companyRepository;
 	}
 
 	//1. megoldás
@@ -138,5 +142,29 @@ public class CompanyController {
           throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
 	}
+	@GetMapping(params = "aboveSalary")
+	public List<CompanyDto> getCompaniesAboveASalary(@RequestParam int aboveSalary,
+			@RequestParam(required = false) Boolean full) {
+		List<Company> allCompanies = companyRepository.findByEmployeeWithSalaryHigherThan(aboveSalary);
+		return mapCompanies(allCompanies, full);
+	}
+
+	private List<CompanyDto> mapCompanies(List<Company> allCompanies, Boolean full) {
+		if (full == null || !full) {
+			return companyMapper.companiesToSummaryDtos(allCompanies);
+		} else
+			return companyMapper.companiesToDtos(allCompanies);
+	}
+
+	@GetMapping(params = "aboveEmployeeNumber")
+	public List<CompanyDto> getCompaniesAboveEmployeeNumber(@RequestParam int aboveEmployeeNumber,
+			@RequestParam(required = false) Boolean full) {
+		List<Company> filteredCompanies = companyRepository.findByEmployeeCountHigherThan(aboveEmployeeNumber);
+		return mapCompanies(filteredCompanies, full);
+	}
 	
+	@GetMapping("/{id}/salaryStats")
+	public List<AverageSalaryByPosition> getSalaryStatsById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
+		return companyRepository.findAverageSalariesByPosition(id);
+	}
 }
