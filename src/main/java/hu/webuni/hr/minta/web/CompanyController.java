@@ -3,6 +3,10 @@ package hu.webuni.hr.minta.web;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
+import org.springframework.data.web.SortDefault.SortDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -142,10 +146,15 @@ public class CompanyController {
           throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
 	}
+	
 	@GetMapping(params = "aboveSalary")
 	public List<CompanyDto> getCompaniesAboveASalary(@RequestParam int aboveSalary,
-			@RequestParam(required = false) Boolean full) {
-		List<Company> allCompanies = companyRepository.findByEmployeeWithSalaryHigherThan(aboveSalary);
+			@RequestParam(required = false) Boolean full,
+			@SortDefault("id") Pageable pageable) {
+		Page<Company> page = companyRepository.findByEmployeeWithSalaryHigherThan(pageable, aboveSalary);
+		System.out.println(page.getTotalElements());
+		System.out.println(page.isLast());
+		List<Company> allCompanies = page.getContent();
 		return mapCompanies(allCompanies, full);
 	}
 

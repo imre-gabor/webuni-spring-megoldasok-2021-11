@@ -1,6 +1,7 @@
 package hu.webuni.hr.minta.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,24 @@ public class InitDbService {
 	@Transactional
 	public void initDb() {
 		
-//		Position developer = positionRepository.save(new Position("fejlesztő", Qualification.UNIVERSITY));
-//		Position tester = positionRepository.save(new Position("tesztelő", Qualification.HIGH_SCHOOL));
+		String developerName = "fejlesztő";
+		String testerName = "tesztelő";
 		
-		Employee newEmployee1 = employeeRepository.save(new Employee(null, "ssdf", "developer", 200000, LocalDateTime.now()));
-//		newEmployee1.setPosition(developer);
+		List<Position> developerPositions = positionRepository.findByName(developerName);
+		Position developer = developerPositions.isEmpty() 
+				? positionRepository.save(new Position(developerName, Qualification.UNIVERSITY))
+				: developerPositions.get(0);
+					
+		List<Position> testerPositions = positionRepository.findByName(testerName);
+		Position tester = testerPositions.isEmpty()
+				? positionRepository.save(new Position(testerName, Qualification.HIGH_SCHOOL))
+				: testerPositions.get(0);
 		
-		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", "tester", 200000, LocalDateTime.now()));
-//		newEmployee2.setPosition(tester);
+		Employee newEmployee1 = employeeRepository.save(new Employee(null, "ssdf", 200000, LocalDateTime.now()));
+		newEmployee1.setPosition(developer);
+		
+		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", 200000, LocalDateTime.now()));
+		newEmployee2.setPosition(tester);
 		Company newCompany = companyRepository.save(new Company(null, 10, "sdfsd", "", null));
 		newCompany.addEmployee(newEmployee2);
 		newCompany.addEmployee(newEmployee1);

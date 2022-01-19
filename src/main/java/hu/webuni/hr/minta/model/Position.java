@@ -16,8 +16,9 @@ public class Position {
 	private String name;
 	private Qualification qualification;
 	
-//	@OneToMany(mappedBy = "position")
-//	private List<Employee> employees;
+	
+	@OneToMany(mappedBy = "position")
+	private List<Employee> employees;
 	
 	
 	public Position() {
@@ -46,5 +47,13 @@ public class Position {
 	public void setQualification(Qualification qualification) {
 		this.qualification = qualification;
 	}
-	
+
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<Employee> employees) {
+		this.employees = employees;
+	}
+
 }
