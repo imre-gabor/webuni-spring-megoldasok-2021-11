@@ -57,16 +57,16 @@ public class InitDbService {
 		newCompany.addEmployee(newEmployee2);
 		newCompany.addEmployee(newEmployee1);
 		
-//		PositionDetailsByCompany pd = new PositionDetailsByCompany();
-//		pd.setCompany(newCompany);
-//		pd.setMinSalary(250000);
-//		pd.setPosition(developer);
-//		positionDetailsByCompanyRepository.save(pd);
-//		
-//		PositionDetailsByCompany pd2 = new PositionDetailsByCompany();
-//		pd2.setCompany(newCompany);
-//		pd2.setMinSalary(200000);
-//		pd2.setPosition(tester);
-//		positionDetailsByCompanyRepository.save(pd2);
+		PositionDetailsByCompany pd = new PositionDetailsByCompany();
+		pd.setCompany(newCompany);
+		pd.setMinSalary(250000);
+		pd.setPosition(developer);
+		positionDetailsByCompanyRepository.save(pd);
+		
+		PositionDetailsByCompany pd2 = new PositionDetailsByCompany();
+		pd2.setCompany(newCompany);
+		pd2.setMinSalary(200000);
+		pd2.setPosition(tester);
+		positionDetailsByCompanyRepository.save(pd2);
 	}
 }
