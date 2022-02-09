@@ -8,10 +8,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import hu.webuni.hr.minta.dto.HolidayRequestFilterDto;
 import hu.webuni.hr.minta.dto.HolidayRequestDto;
+import hu.webuni.hr.minta.dto.HolidayRequestFilterDto;
 import hu.webuni.hr.minta.mapper.EmployeeMapper;
 import hu.webuni.hr.minta.mapper.HolidayRequestMapper;
 import hu.webuni.hr.minta.model.HolidayRequest;
@@ -63,7 +62,7 @@ public class HolidayRequestController {
 	}
 
 	@PostMapping
-//	@PreAuthorize("#newHolidayRequest.employeeId == authentication.principal.employee.employeeId")
+	@PreAuthorize("#newHolidayRequest.employeeId == authentication.principal.employee.employeeId")
 	public HolidayRequestDto addHolidayRequest(@RequestBody @Valid HolidayRequestDto newHolidayRequest) {
 		HolidayRequest holidayRequest;
 		try {
@@ -101,6 +100,7 @@ public class HolidayRequestController {
 	}
 
 	@PutMapping(value = "/{id}/approval", params = { "status", "approverId" })
+	@PreAuthorize("#approverId == authentication.principal.employee.employeeId")
 	public HolidayRequestDto approveHolidayRequest(@PathVariable long id, @RequestParam long approverId, @RequestParam boolean status) {
 		HolidayRequest holidayRequest;
 		try {

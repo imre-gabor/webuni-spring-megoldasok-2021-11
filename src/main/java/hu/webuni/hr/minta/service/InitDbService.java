@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,9 @@ public class InitDbService {
 	@Autowired
 	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	@Transactional
 	public void initDb() {
 		
@@ -50,9 +54,14 @@ public class InitDbService {
 		
 		Employee newEmployee1 = employeeRepository.save(new Employee(null, "ssdf", 200000, LocalDateTime.now()));
 		newEmployee1.setPosition(developer);
+		newEmployee1.setUsername("user1");
+		newEmployee1.setPassword(passwordEncoder.encode("pass1"));
 		
 		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", 200000, LocalDateTime.now()));
 		newEmployee2.setPosition(tester);
+		newEmployee2.setUsername("user2");
+		newEmployee2.setPassword(passwordEncoder.encode("pass2"));
+		newEmployee2.setManager(newEmployee1);
 		Company newCompany = companyRepository.save(new Company(null, 10, "sdfsd", "", null));
 		newCompany.addEmployee(newEmployee2);
 		newCompany.addEmployee(newEmployee1);

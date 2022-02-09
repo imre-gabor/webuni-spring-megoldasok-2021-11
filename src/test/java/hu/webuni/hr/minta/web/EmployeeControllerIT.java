@@ -7,23 +7,47 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import hu.webuni.hr.minta.dto.EmployeeDto;
+import hu.webuni.hr.minta.model.Employee;
+import hu.webuni.hr.minta.repository.EmployeeRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 public class EmployeeControllerIT {
 
 	private static final String BASE_URI = "/api/employees";
 
 	@Autowired
 	WebTestClient webTestClient;
+	
+	@Autowired
+	EmployeeRepository employeeRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	private String username = "testuser";
+	private String pass = "pass";
 
+	@BeforeEach
+	public void init() {
+		if(employeeRepository.findByUsername(username).isEmpty()) {
+			Employee employee = new Employee();
+			employee.setUsername(username);
+			employee.setPassword(passwordEncoder.encode(pass));
+			employeeRepository.save(employee);
+		}
+	}
 	
 	@Test
 	void testThatNewValidEmployeeCanBeSaved() throws Exception {
@@ -110,6 +134,7 @@ public class EmployeeControllerIT {
 		return webTestClient
 				.put()
 				.uri(path)
+				.headers(headers -> headers.setBasicAuth(username, pass))
 				.bodyValue(newEmployee)
 				.exchange();
 	}
@@ -118,6 +143,7 @@ public class EmployeeControllerIT {
 		return webTestClient
 				.post()
 				.uri(BASE_URI)
+				.headers(headers -> headers.setBasicAuth(username, pass))
 				.bodyValue(newEmployee)
 				.exchange();
 	}
@@ -126,6 +152,7 @@ public class EmployeeControllerIT {
 		List<EmployeeDto> responseList = webTestClient
 				.get()
 				.uri(BASE_URI)
+				.headers(headers -> headers.setBasicAuth(username, pass))
 				.exchange()
 				.expectStatus()
 				.isOk()

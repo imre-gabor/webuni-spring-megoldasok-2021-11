@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -74,6 +75,10 @@ public class HolidayRequestService {
 	@Transactional
 	public HolidayRequest approveHolidayRequest(long id, long approverId, boolean status) {
 		HolidayRequest holidayRequest = holidayRequestRepository.findById(id).get();
+		Employee employee = holidayRequest.getEmployee();
+		Employee manager = employee.getManager();
+		if(manager == null || !employee.getManager().getEmployeeId().equals(approverId))
+			throw new AccessDeniedException("Manager invalid.");
 		holidayRequest.setApprover(employeeService.findById(approverId).get());
 		holidayRequest.setApproved(status);
 		holidayRequest.setApprovedAt(LocalDateTime.now());

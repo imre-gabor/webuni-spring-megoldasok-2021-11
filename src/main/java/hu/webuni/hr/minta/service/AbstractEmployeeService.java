@@ -12,23 +12,47 @@ import org.springframework.util.StringUtils;
 
 import hu.webuni.hr.minta.model.Company;
 import hu.webuni.hr.minta.model.Employee;
+import hu.webuni.hr.minta.model.Position;
 import hu.webuni.hr.minta.repository.EmployeeRepository;
+import hu.webuni.hr.minta.repository.PositionRepository;
 
 @Service
 public abstract class AbstractEmployeeService implements EmployeeService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	PositionRepository positionRepository;
 
 	@Override
 	public Employee save(Employee employee) {
+		setPosition(employee);
+		
 		return employeeRepository.save(employee);
+	}
+
+	@Override
+	public void setPosition(Employee employee) {
+		String positionName = employee.getPosition().getName();
+		Position position = null;
+		if(positionName != null) {
+			List<Position> positions = positionRepository.findByName(positionName);
+			if(positions.isEmpty()) {
+				position = positionRepository.save(new Position(positionName, null));
+			} else {
+				position = positions.get(0);
+			}
+		}
+		employee.setPosition(position);
 	}
 
 	@Override
 	public Employee update(Employee employee) {
 		if (!employeeRepository.existsById(employee.getEmployeeId()))
 			return null;
+		
+		setPosition(employee);
 		return employeeRepository.save(employee);
 	}
 

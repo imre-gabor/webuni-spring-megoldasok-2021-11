@@ -2,6 +2,7 @@ package hu.webuni.hr.minta.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,6 +18,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 	List<Employee> findByNameStartingWithIgnoreCase(String name);
 
 	List<Employee> findByDateOfStartWorkBetween(LocalDateTime start, LocalDateTime end);
+
+	Optional<Employee> findByUsername(String username);
 	
 
 }
